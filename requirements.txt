@@ -1,0 +1,27 @@
+# West Africa Financial Intelligence Agent
+# Python 3.11+
+
+# Database
+sqlalchemy>=2.0.0
+# psycopg2-binary>=2.9.0  # For PostgreSQL; uncomment if using Postgres
+
+# Web search & extract (Tavily API)
+tavily-python>=0.3.0
+requests>=2.31.0
+
+# Telegram
+python-telegram-bot>=21.0
+
+# AI / LLM (Ollama for local; openai/anthropic optional for cloud)
+ollama>=0.3.0
+# openai>=1.0.0
+# anthropic>=0.18.0
+
+# Scheduling
+apscheduler>=3.10.0
+
+# Utilities
+python-dotenv>=1.0.0
+
+# Optional: PDF parsing
+PyPDF2>=3.0.0
