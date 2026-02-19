@@ -103,8 +103,8 @@ async def cmd_start(update, context):
         "/add_stock <ticker> - Add to watchlist\n"
         "/remove_stock <ticker> - Remove from watchlist\n\n"
         "You can also:\n"
-        "- Send: BUY SNTS 100 @ 5000\n"
-        "- Send: SELL ETIT 50 @ 12000\n"
+        "- Send transactions: BUY SNTS 100 @ 5000\n"
+        "- Ask questions naturally: 'What is the best performing stock today?'\n"
         "- Upload CSV with transactions"
     )
 
@@ -280,7 +280,7 @@ async def cmd_remove_stock(update, context):
 
 
 async def handle_text(update, context):
-    """Handle free text - try to parse as transaction."""
+    """Handle free text - try to parse as transaction, otherwise answer as a question."""
     result = await _ensure_user(update)
     if not result:
         return
@@ -311,11 +311,24 @@ async def handle_text(update, context):
             db.close()
         return
 
-    # Not a transaction - maybe ask for analysis?
-    await update.message.reply_text(
-        "Send a transaction like: BUY SNTS 100 @ 5000\nOr use /analyze <ticker>"
-    )
+    # Not a transaction - treat as natural language query
     db.close()
+    
+    # Show typing indicator
+    await update.message.chat.send_action("typing")
+    
+    try:
+        agent = _get_agent()
+        answer = await agent.query_async(text)
+        await update.message.reply_text(answer)
+    except Exception as e:
+        logger.exception("Query processing error: %s", e)
+        await update.message.reply_text(
+            f"I couldn't process your question. Try:\n"
+            f"- /analyze <ticker>\n"
+            f"- Ask: 'What is the best performing stock?'\n"
+            f"Error: {str(e)[:100]}"
+        )
 
 
 async def handle_document(update, context):

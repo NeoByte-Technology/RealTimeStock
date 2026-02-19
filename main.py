@@ -2,9 +2,10 @@
 West Africa Financial Intelligence Agent - Main Entry Point
 
 Run:
-  python main.py bot      - Start Telegram bot (polling)
-  python main.py analyze <ticker> - CLI stock analysis
-  python main.py init-db  - Initialize database
+  python main.py bot               - Start Telegram bot (polling)
+  python main.py analyze <ticker>  - CLI stock analysis
+  python main.py query <question>  - Answer natural language questions
+  python main.py init-db           - Initialize database
 """
 
 import argparse
@@ -52,6 +53,20 @@ def cmd_analyze(ticker: str):
     return 0
 
 
+def cmd_query(question: str):
+    """Answer a natural language question using web search and AI."""
+    from core.logger import setup_logging
+    setup_logging()
+    from core.agent import FinancialAgent
+
+    agent = FinancialAgent()
+    answer = agent.query(question)
+    print(f"\nQuestion: {question}")
+    print("-" * 40)
+    print(f"{answer}")
+    return 0
+
+
 def cmd_init_db():
     """Initialize database schema."""
     from database.connection import init_db
@@ -68,6 +83,8 @@ def main():
     sub.add_parser("bot", help="Start Telegram bot")
     a = sub.add_parser("analyze", help="Analyze a stock (CLI)")
     a.add_argument("ticker", help="Stock ticker e.g. SNTS")
+    q = sub.add_parser("query", help="Answer natural language questions")
+    q.add_argument("question", help="Your question e.g. 'what is the best performing stock today?'")
     sub.add_parser("init-db", help="Initialize database")
 
     args = parser.parse_args()
@@ -76,6 +93,8 @@ def main():
         cmd_bot()
     elif args.command == "analyze":
         sys.exit(cmd_analyze(args.ticker))
+    elif args.command == "query":
+        sys.exit(cmd_query(args.question))
     elif args.command == "init-db":
         sys.exit(cmd_init_db())
     else:

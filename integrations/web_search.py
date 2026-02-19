@@ -63,6 +63,7 @@ def tavily_search(
 ) -> List[dict]:
     """
     Search the web using Tavily API.
+    Only searches trusted BRVM financial sources by default.
 
     Returns list of dicts with keys: title, url, content, score.
     """
@@ -71,17 +72,16 @@ def tavily_search(
         return []
 
     try:
+        # Only trust RichBourse and BRVM official sources
+        domains = include_domains or [
+            "richbourse.com",
+            "brvm.org",
+        ]
         response = client.search(
             query=query,
             max_results=max_results,
             search_depth=search_depth,
-            include_domains=include_domains or [
-                "richbourse.com",
-                "dabafinance.com",
-                "brvm.org",
-                "reuters.com",
-                "investing.com",
-            ],
+            include_domains=domains,
         )
         return response.get("results", [])
     except Exception as e:

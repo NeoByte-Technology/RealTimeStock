@@ -129,6 +129,28 @@ python main.py bot
 | `/add_stock <ticker>` | Add to watchlist |
 | `/remove_stock <ticker>` | Remove from watchlist |
 
+## Natural Language Queries
+
+Ask questions in plain English and the AI will search the web and provide intelligent answers. Works in both CLI and Telegram bot.
+
+### CLI Examples
+```bash
+python main.py query "what is the best performing stock today?"
+python main.py query "which BRVM stocks are worth buying?"
+python main.py query "how is Senegal's economy performing?"
+python main.py query "give me latest news about Orange Senegal"
+```
+
+### Telegram Examples
+Just send any question as a message:
+```
+What is the best performing stock today?
+Which companies are in the BRVM index?
+How are tech stocks performing in West Africa?
+```
+
+The bot will use Tavily search on trusted financial domains (Richbourse, Daba Finance, BRVM.org, Reuters, Investing.com) and provide an AI-generated answer based on the latest information.
+
 ## Text Transactions
 
 Send a message like:
